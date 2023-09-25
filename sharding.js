@@ -9,4 +9,12 @@ function shardData(data, numServers) {
   return servers;
 }
 
-module.exports = shardData;
+function rebalanceData(currentServers, newNumServers) {
+  const allData = currentServers.flat();
+  return shardData(allData, newNumServers);
+}
+
+module.exports = {
+  shardData,
+  rebalanceData,
+};

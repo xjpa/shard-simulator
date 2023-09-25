@@ -1,17 +1,22 @@
-function shardData(data, numServers) {
-  const servers = Array.from({ length: numServers }, () => []);
+function shardData(data, numShards, keyFunc) {
+  const shards = Array.from({ length: numShards }, () => []);
 
-  for (let i = 0; i < data.length; i++) {
-    const serverIndex = i % numServers;
-    servers[serverIndex].push(data[i]);
-  }
+  data.forEach((item) => {
+    const key = keyFunc(item);
+    const shardIndex = hash(key) % numShards;
+    shards[shardIndex].push(item);
+  });
 
-  return servers;
+  return shards;
 }
 
-function rebalanceData(currentServers, newNumServers) {
+function hash(key) {
+  return parseInt(key, 10);
+}
+
+function rebalanceData(currentServers, newNumServers, keyFunc) {
   const allData = currentServers.flat();
-  return shardData(allData, newNumServers);
+  return shardData(allData, newNumServers, keyFunc);
 }
 
 module.exports = {
